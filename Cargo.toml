@@ -3,7 +3,7 @@ cargo-features = ["trim-paths"]
 
 # virtual manifest, no primary package
 [workspace]
-members = ["./crates/*", "crates/squeeshy", "crates/squeeshy-oxc"]
+members = ["./crates/*", "crates/squeeshy", "crates/squeeshy-common", "crates/squeeshy-error", "crates/squeeshy-oxc", "crates/squeeshy-resolver"]
 # affect entire workspace, must be set, if "edition" is 2021 this value should be 2
 resolver = "2"
 
@@ -17,6 +17,22 @@ repository = "https://github.com/zmzlois/squeeshy-rs"
 
 
 [workspace.dependencies]
+oxc = { version = "0.1.3", features = ["semantic", "formatter"] }
+sugar_path = "0.0.12"
+tokio = { version = "1.24.1" }
+hashbrown = { version = "0.13.2", features = ["rayon"] }
+derivative = "2.2.0"
+rustc-hash = "1.1.0"
+tracing = "0.1.37"
+anyhow = "1.0.66"
+index_vec = "0.1.3"
+serde = { version = "1.0.147", features = ["derive"] }
+serde_json = "1.0.87"
+insta = "1.21.0"
+testing_macros = "0.2.7"
+beef = "0.5.2"
+scoped-tls = "1.0"
+string_wizard = { version = "0.0.3" }
 
 
 # Workspace linting

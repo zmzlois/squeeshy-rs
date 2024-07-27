@@ -6,7 +6,29 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
-sugar_path = "1.2.0"
+derivative = { workspace = true }
+sugar_path = { workspace = true }
+oxc = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true, features = [
+    "fs",
+    "rt",
+    "macros",
+    "rt-multi-thread",
+    "sync",
+] }
+rustc-hash = { workspace = true }
+tracing = { workspace = true }
+anyhow = { workspace = true }
+index_vec = { workspace = true }
+futures = "0.3.25"
+rayon = "1.6.0"
+string_wizard = { workspace = true }
+
+[dev_dependencies]
+insta = { workspace = true }
+testing_macros = { workspace = true }
 
 [lints]
 workspace = true
