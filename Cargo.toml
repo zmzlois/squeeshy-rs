@@ -1,0 +1,57 @@
+# sanitize build output path
+cargo-features = ["trim-paths"]
+
+# virtual manifest, no primary package
+[workspace]
+members = ["./crates/*"]
+# affect entire workspace, must be set, if "edition" is 2021 this value should be 2
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/zmzlois/squeeshy-rs"
+
+# compiler settings and optimization
+[profile.release]
+# improve performance of generated code
+codegen-units = 1 
+# turn on all optimizations
+opt-level = 3 
+# force LLVM uses link time optimization to produce better optmize code but with less time to run
+lto = "thin" 
+
+debug = false
+# strip symbols or debuginfo from a binary, true = "symbols"
+strip = true
+
+panic = "abort"
+
+
+[profile.release-prod]
+inherits = "release"
+# turn on best optimization across all crates within dependency graph (but will take longer)
+lto = "fat"
+
+
+[profile.wasi]
+inherits = "release"
+# controls how many "code gen units" a crate will be split into, more code gen units allow more of a crate to be processed in parallel possibly reducing compile time
+codegen-units = 16
+# optimize for binary size also turn off loop vectorization
+opt-level = "z"
+debug = true
+strip = "none"
+
+
+[profile.dev]
+
+codegen-units = 16
+debug         = 2       # debug build will cause runtime panic if codegen-unints is default
+incremental   = true
+panic         = "abort"
+
+
+
+
+[dependencies]
