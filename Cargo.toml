@@ -3,14 +3,80 @@ cargo-features = ["trim-paths"]
 
 # virtual manifest, no primary package
 [workspace]
-members = ["./crates/*"]
+members = ["./crates/*", "crates/squeeshy", "crates/squeeshy-oxc"]
 # affect entire workspace, must be set, if "edition" is 2021 this value should be 2
 resolver = "2"
 
 [workspace.package]
 edition = "2021"
 license = "MIT"
+# TODO (maybe don't need a homepage)
+# homepage = ""
 repository = "https://github.com/zmzlois/squeeshy-rs"
+
+
+
+[workspace.dependencies]
+
+
+# Workspace linting
+[workspace.lints.rust]
+
+
+# --- restriction https://doc.rust-lang.org/clippy/usage.html#clippyrestriction
+# https://rust-lang.github.io/rust-clippy/master/index.html
+[workspace.lints.clippy]
+# disallow debug in test or `#[cfg(test)]`
+dbg_macro = "deny"
+# disallow print macro in test functions
+print_stdout = "deny"
+# make this rule explicit so it removes confusion around `clone`
+# increase readability and avoid `clone` mindlessly and heap allocation on accident
+clone_on_ref_ptr = "deny"
+# Empty Drop implementations have no effect when dropping an instance of the type. They are most likely useless. However, an empty Drop implementation prevents a type from being destructured, which might be the intention behind adding the implementation as a marker.
+empty_drop = "deny"
+# require that all exits are performed either by panicking (which produces a message, a code location, and optionally a backtrace) or by returning from main() (which is a single place to look). 
+exit = "deny"
+# use `!FileType::is_dir()` instead
+filetype_is_file = "deny"
+# the None case is handled in a future refactor instead of using .unwrap() or the Index trait.
+get_unwrap = "deny"
+# Expressions such as Rc<String> usually have no advantage over Rc<str>, since it is larger and involves an extra level of indirection, and doesn’t implement Borrow<str>.
+# While mutating a buffer type would still be possible with Rc::get_mut(), it only works if there are no additional references yet, which usually defeats the purpose of enclosing it in a shared ownership type. Instead, additionally wrapping the inner type with an interior mutable container (such as RefCell or Mutex) would normally be used.
+rc_buffer="deny"
+# Sometimes combining generic types can lead to the requirement that a type use Rc in conjunction with Mutex. We must consider those cases false positives, but alas they are quite hard to rule out. Luckily they are also rare.
+rc_mutex = "deny"
+# having a wildcard pattern after matching all enum variants explicitly.
+rest_pat_in_fully_bound_structs = "deny"
+# checks for //SAFETY: comments on safe code  
+# Safe code has no safety requirements, so there is no need to describe safety invariants.
+unnecessary_safety_comment      = "deny"
+# to write the best rust code (but really?)
+pedantic = { level = "deny", priority = -1 }
+# Checks the doc comments of publicly visible functions that return a Result type and warns if there is no # Errors section.
+missing_errors_doc = "allow"
+
+# #[must_use] is creating too much noise for this codebase, it does not add much value except nagging
+# the programmer to add a #[must_use] after clippy has been run.
+# Having #[must_use] everywhere also hinders readability.
+must_use_candidate = "allow"
+# suggest the use of const 
+# Not having the function const prevents callers of the function from being const as well.
+missing_const_for_fn = "allow"
+# check for usage of `for_each` that would be more simply written as a `for` loop
+needless_for_each = "allow"
+# Checks for public types with a pub fn new() -> Self method and no implementation of Default.
+new_without_default = "allow"
+# check struct constructor sequence. should re-evaluate this rule
+inconsistent_struct_constructor = "allow"
+
+# Single match is equally readable as if/else. https://rust-lang.github.io/rust-clippy/master/index.html#/single_match
+single_match      = "allow"
+single_match_else = "allow"
+
+
+
+
 
 # compiler settings and optimization
 [profile.release]
@@ -18,13 +84,11 @@ repository = "https://github.com/zmzlois/squeeshy-rs"
 codegen-units = 1 
 # turn on all optimizations
 opt-level = 3 
-# force LLVM uses link time optimization to produce better optmize code but with less time to run
+# force LLVM uses link time optimization to produce better optimize code but with less time to run
 lto = "thin" 
-
 debug = false
 # strip symbols or debuginfo from a binary, true = "symbols"
 strip = true
-
 panic = "abort"
 
 
@@ -45,7 +109,6 @@ strip = "none"
 
 
 [profile.dev]
-
 codegen-units = 16
 debug         = 2       # debug build will cause runtime panic if codegen-unints is default
 incremental   = true
@@ -54,4 +117,5 @@ panic         = "abort"
 
 
 
-[dependencies]
+
+
